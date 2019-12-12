@@ -1,4 +1,7 @@
 import numpy as np
+from matplotlib import pyplot as plt
+import seaborn as sns; sns.set()
+import pandas as pd
 import sys
 
 def load(filename):
@@ -7,9 +10,20 @@ def load(filename):
         print(f'{N} customers, {V} vehicles with capacity {c}')
         customers = [list(map(float, line.split())) for line in file if line.strip()]
         return np.array(customers), V, c
+    
+    
+def show_customers(customers, filename=None):
+    df = pd.DataFrame(customers, columns=['demand', 'x', 'y'])
+    df['role'] = ['center'] + ['customer'] * (customers.shape[0] - 1)
+    ax = sns.scatterplot(x='x', y='y', data=df, size='demand', hue='role', legend=False)
+    if filename is not None:
+        ax.set_title(filename.split('\\')[-1])
+    plt.show()
 
+            
 def main(filename):
     customers, V, c = load(filename)
+    show_customers(customers, filename)
 
             
 if __name__ == '__main__':
