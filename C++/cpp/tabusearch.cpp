@@ -39,6 +39,7 @@ double TabuSearch::distance(const int& i, const int& j) {
 }
 
 int TabuSearch::updateToBestNeighbor(Vehicle vehicles[], TabuList& tabulist) {
+    bool found = false;
     int bestNeighborCost = numeric_limits<int>::max(), neighborCost;
     int bestFromIndex, bestToIndex;
     list<int>::iterator bestFromNodeIndex, bestToNodeIndex;
@@ -73,6 +74,7 @@ int TabuSearch::updateToBestNeighbor(Vehicle vehicles[], TabuList& tabulist) {
                                 bestToIndex = toIndex;
                                 bestFromNodeIndex = fromNodeIndex;
                                 bestToNodeIndex = toNodeIndex;
+                                found = true;
                             }
                         }
                     }
@@ -80,8 +82,12 @@ int TabuSearch::updateToBestNeighbor(Vehicle vehicles[], TabuList& tabulist) {
             }
         }
     }
-    // Update tabulist
+    // lower the tabu tenures
     tabulist.step();
+    // If not found, don't change anything
+    if (!found)
+        return cost;
+    // Update tabulist
     tabulist.makeTabu(*prev(bestFromNodeIndex), *bestFromNodeIndex);
     tabulist.makeTabu(*bestFromNodeIndex, *next(bestFromNodeIndex));
     tabulist.makeTabu(*bestToNodeIndex, *next(bestToNodeIndex));
