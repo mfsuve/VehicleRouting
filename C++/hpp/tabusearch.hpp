@@ -1,7 +1,8 @@
 #include <iostream>
 #include <vector>
-#include "tabulist.hpp"
-#include "vehicle.hpp"
+#include "../hpp/tabulist.hpp"
+#include "../hpp/vehicle.hpp"
+#include "../hpp/customer.hpp"
 
 using namespace std;
 

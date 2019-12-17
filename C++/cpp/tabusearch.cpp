@@ -4,9 +4,9 @@
 #include <iterator>
 #include <limits>
 #include <fstream>
-#include <cmath>
-#include "tabusearch.hpp"
-#include "vehicle.hpp"
+#include "../hpp/tabusearch.hpp"
+#include "../hpp/vehicle.hpp"
+#include "../hpp/customer.hpp"
 
 // TODO: initialize cost with greedy solver
 TabuSearch::TabuSearch(const char* filename) : cost(0) {
