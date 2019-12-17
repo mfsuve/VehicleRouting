@@ -11,5 +11,5 @@ int main(int argc, char *argv[]) {
     }
     srand(0);
     TabuSearch solver(argv[1]);
-    // solver.solve(10, 5);
+    solver.solve(10, 5);
 }
