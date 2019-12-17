@@ -1,3 +1,5 @@
+#ifndef TABUSEARCH_HPP
+#define TABUSEARCH_HPP
 #include <iostream>
 #include <vector>
 #include "../hpp/tabulist.hpp"
@@ -16,5 +18,5 @@ private:
     int cost;
     double distance(const int& i, const int& j);
     int updateToBestNeighbor(Vehicle vehicles[], TabuList& tabulist);
-    vector<double> distances;
 };
+#endif

@@ -1,3 +1,5 @@
+#ifndef TABULIST_HPP
+#define TABULIST_HPP
 #include <iostream>
 #include <vector>
 
@@ -13,3 +15,4 @@ public:
     void step();
     int index(int i, int j);
 };
+#endif
