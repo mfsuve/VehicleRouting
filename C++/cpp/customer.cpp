@@ -15,13 +15,11 @@ double Customer::distance(int i) {
 }
 
 void Customer::addNeighbor(Customer& neighbor) {
-    double distance = hypot(x - neighbor.x, y - neighbor.y);
-    distances.push_back(distance);
-    neighbor.distances.push_back(distance);
-
-    if (neighbor.id == id - 1)
+    if (neighbor.id == id)
         distances.push_back(0);
-    // for (double dist : distances)
-    //     cout << "id: " << id << " distance: " << dist << endl;
-    // cout << "----------------------------------" << endl;
+    else {
+        double distance = hypot(x - neighbor.x, y - neighbor.y);
+        distances.push_back(distance);
+        neighbor.distances.push_back(distance);
+    }
 }
