@@ -4,19 +4,13 @@
 
 using namespace std;
 
-Customer::Customer(int id, int demand, int x, int y) : id(id), demand(demand), x(x), y(y) {}
+Customer::Customer(int id, int demand, double x, double y) : id(id), demand(demand), x(x), y(y) {}
 
-// ! Unecessary
-Customer::Customer(const Customer& c) : id(c.id), demand(c.demand), x(c.x), y(c.y) {
-    for (double d : c.distances)
-        distances.push_back(d);
-}
-
-int Customer::distance(Customer& to) {
+double Customer::distance(Customer& to) {
     return distances[to.id];
 }
 
-int Customer::distance(int i) {
+double Customer::distance(int i) {
     return distances[i];
 }
 

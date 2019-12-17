@@ -7,13 +7,13 @@ using namespace std;
 
 class Customer {
 public:
-    int id, demand, x, y;
-    Customer(int id, int demand, int x, int y);
-    Customer(const Customer& customer);
-    int distance(Customer& to);
-    int distance(int i);
+    int id, demand;
+    Customer(int id, int demand, double x, double y);
+    double distance(Customer& to);
+    double distance(int i);
     void addNeighbor(Customer& neighbor);
-    vector<double> distances;
 private:
+    vector<double> distances;
+    double x, y;
 };
 #endif
