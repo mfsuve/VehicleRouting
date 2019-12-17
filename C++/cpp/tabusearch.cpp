@@ -13,32 +13,34 @@ TabuSearch::TabuSearch(const char* filename) : cost(0) {
     ifstream file(filename);
     file >> N >> V >> c;
     cout << N << " customers, " << V << " vehicles with capacity " << c << endl;
-    Vehicle::capacity = c;
-    vector<int> xs, ys;
     int demand, x, y;
-    for (int i = 0; i < N; ++i) {
+    for (int id = 0; id < N; ++id) {
         file >> demand >> x >> y;
-        demands.push_back(demand);
-        xs.push_back(x);
-        ys.push_back(y);
+        Customer newCustomer(id, demand, x, y);
+        for (Customer customer : customers)
+            newCustomer.addNeighbor(customer);
+        customers.push_back(newCustomer);
+        
+        // for (Customer customer : customers)
+        //     cout << "id: " << customer.id << " distance size: " << customer.distances.size() << endl;
     }
     file.close();
-    for (int i = 1; i < N; ++i)
-        for (int j = 0; j < i; ++j)
-            distances.push_back(hypot(xs[i] - xs[j], ys[i] - ys[j]));
+
+    cout << "Sizes:" << endl;
+    for (Customer customer : customers)
+        cout << "id: " << customer.id << " distance size: " << customer.distances.size() << endl;
+
+    cout << "Distances:" << endl;
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            Customer from = customers[i], to = customers[j];
+            cout << from.distance(to) << " ";
+        }
+        cout << endl;
+    }
 }
 
-double TabuSearch::distance(const int& i, const int& j) {
-    if (i == j) return 0;
-    int idx;
-    if (i > j)
-        idx = (i * (i - 1)) / 2 + j;
-    else
-        idx = (j * (j - 1)) / 2 + i;
-    return distances[idx];
-}
-
-int TabuSearch::updateToBestNeighbor(Vehicle vehicles[], TabuList& tabulist) {
+int TabuSearch::updateToBestNeighbor(Vehicle vehicles[], TabuList& tabulist) { /*
     bool found = false;
     int bestNeighborCost = numeric_limits<int>::max(), neighborCost;
     int bestFromIndex, bestToIndex;
@@ -95,10 +97,11 @@ int TabuSearch::updateToBestNeighbor(Vehicle vehicles[], TabuList& tabulist) {
     int node = vehicles[bestFromIndex].remove(bestFromNodeIndex);
     vehicles[bestToIndex].add(node, bestToNodeIndex);
     // Return the cost
-    return cost + bestNeighborCost;
+    return cost + bestNeighborCost;*/
+    return 0;
 }
 
-void TabuSearch::solve(int maxIteration, int tenure) {
+void TabuSearch::solve(int maxIteration, int tenure) {/*
     TabuList tabulist(N, tenure);
     Vehicle vehicles[N]; // TODO Initialize this with greedy solution
     int bestCost = numeric_limits<int>::max();
@@ -113,5 +116,5 @@ void TabuSearch::solve(int maxIteration, int tenure) {
         else
             iteration++;
     }
-
+*/
 }

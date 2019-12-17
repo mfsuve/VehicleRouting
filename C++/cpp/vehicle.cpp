@@ -21,11 +21,11 @@ list<int>::iterator Vehicle::end() {
 int Vehicle::remove(list<int>::iterator i) {
    int node = *i;
    route.erase(i);
-   load -= TabuSearch::demands[node];
+   // TODO decrease demand
    return node; 
 }
 
 void Vehicle::add(int node, list<int>::iterator i) {
-    load += TabuSearch::demands[node];
+    // TODO decrease demand
     route.insert(next(i), node);
 }

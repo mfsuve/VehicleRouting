@@ -9,7 +9,7 @@ using namespace std;
 class TabuSearch {
 public:
     int N, V, c;
-    static vector<int> demands;
+    vector<Customer> customers;
     TabuSearch(const char* filename);
     void solve(int iterations, int tenure);
 private:
