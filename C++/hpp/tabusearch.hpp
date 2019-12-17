@@ -16,7 +16,7 @@ public:
     void solve(int iterations, int tenure);
 private:
     int cost;
-    double distance(const int& i, const int& j);
     int updateToBestNeighbor(Vehicle vehicles[], TabuList& tabulist);
+    int TabuSearch::calculateNeighborCost(list<Customer>::iterator fromNodeIndex, list<Customer>::iterator toNodeIndex);
 };
 #endif

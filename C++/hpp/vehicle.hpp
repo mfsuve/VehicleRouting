@@ -7,13 +7,15 @@ using namespace std;
 
 class Vehicle {
 public:
-    list<int> route;
+    list<Customer> route;
     Vehicle();
     bool fits(int demand);
-    list<int>::iterator begin();
-    list<int>::iterator end();
-    int remove(list<int>::iterator i);
-    void add(int node, list<int>::iterator i);
+    bool Vehicle::fits(Customer& c);
+    bool Vehicle::fits(list<Customer>::iterator i);
+    list<Customer>::iterator begin();
+    list<Customer>::iterator end();
+    Customer remove(list<Customer>::iterator i);
+    void add(Customer node, list<Customer>::iterator i);
 private:
     int capacity;
     int load;

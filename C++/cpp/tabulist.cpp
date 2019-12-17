@@ -1,7 +1,8 @@
 #include <iostream>
-#include <vector>
+#include <list>
 #include <cstdlib>
 #include "../hpp/tabulist.hpp"
+#include "../hpp/customer.hpp"
 
 using namespace std;
 
@@ -16,8 +17,24 @@ void TabuList::makeTabu(int i, int j, int maxDelay) {
     tabulist[index(i, j)] = tenure + randomDelay;
 }
 
+void TabuList::makeTabu(Customer i, Customer j, int maxDelay) {
+    makeTabu(i.id, j.id);
+}
+
+void TabuList::makeTabu(list<Customer>::iterator i, list<Customer>::iterator j, int maxDelay) {
+    makeTabu(*i, *j);
+}
+
 bool TabuList::isTabu(int i, int j) {
     return tabulist[index(i, j)] != 0;
+}
+
+bool TabuList::isTabu(Customer i, Customer j) {
+    return isTabu(i.id, j.id);
+}
+
+bool TabuList::isTabu(list<Customer>::iterator i, list<Customer>::iterator j) {
+    return isTabu(*i, *j);
 }
 
 void TabuList::step() {
