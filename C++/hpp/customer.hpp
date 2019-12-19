@@ -7,7 +7,7 @@ using namespace std;
 
 class Customer {
 public:
-    int id, demand;
+    int id, demand, visited;
     Customer(int id, int demand, double x, double y);
     double distance(Customer& to);
     double distance(int i);

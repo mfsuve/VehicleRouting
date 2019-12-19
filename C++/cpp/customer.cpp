@@ -4,6 +4,7 @@
 
 using namespace std;
 
+Customer::Customer(int id, int demand, double x, double y) : id(id), demand(demand), x(x), y(y), visited(false) {}
 
 bool Customer::operator==(const Customer& customer) {
     return id == customer.id;
