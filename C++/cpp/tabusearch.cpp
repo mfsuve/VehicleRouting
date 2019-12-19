@@ -28,7 +28,7 @@ TabuSearch::TabuSearch(const char* filename) {
         in = istringstream(line);
         in >> demand >> x >> y;
         customers.emplace_back(id, demand, x, y);
-        for (Customer& customer : customers) {
+        for (Customer& customer : customers) { // TODO read customers into list (not a vector)
             customers[id].addNeighbor(customer);
         }
     }
