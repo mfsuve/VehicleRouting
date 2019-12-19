@@ -16,6 +16,7 @@ public:
     list<Customer>::iterator end();
     Customer remove(list<Customer>::iterator i);
     void add(Customer node, list<Customer>::iterator i);
+    bool empty();
     static int capacity;
 private:
     int capacity;
