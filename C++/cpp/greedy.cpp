@@ -33,6 +33,10 @@ Greedy& Greedy::solve() {
     }
 
     // For debugging
+    customers.front().visited = true;
+    cout << "After setting warehouse as visited:" << endl;
+    cout << "customers.front().visited: " << customers.front().visited << endl;
+
     cout << "After adding the first node to all vehicles:" << endl;
     for (int i = 0; i < V; ++i) {
         Vehicle& vehicle = vehicles[i];

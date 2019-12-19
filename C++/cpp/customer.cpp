@@ -15,6 +15,7 @@ bool Customer::isWarehouse() const {
 }
 
 double Customer::distance(const Customer& to) const {
+    cout << distances.size() << endl;
     return distances[to.id];
 }
 
