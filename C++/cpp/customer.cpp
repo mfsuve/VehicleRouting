@@ -4,7 +4,13 @@
 
 using namespace std;
 
-Customer::Customer(int id, int demand, double x, double y) : id(id), demand(demand), x(x), y(y) {}
+
+bool Customer::operator==(const Customer& customer) {
+    return id == customer.id;
+}
+
+bool Customer::isWarehouse() const {
+    return id == 0;
 
 double Customer::distance(Customer& to) {
     return distances[to.id];
