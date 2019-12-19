@@ -14,8 +14,8 @@ public:
     void addNeighbor(Customer& neighbor);
     bool operator==(const Customer& customer);
     bool isWarehouse() const;
-private:
     vector<double> distances;
+private:
     double x, y;
 };
 #endif
