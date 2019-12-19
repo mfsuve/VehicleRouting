@@ -27,6 +27,10 @@ list<Customer>::iterator Vehicle::end() {
     return route.end();
 }
 
+bool Vehicle::empty() {
+    return route.empty();
+}
+
 Customer Vehicle::remove(list<Customer>::iterator i) {
    Customer node = *i;
    route.erase(i);
