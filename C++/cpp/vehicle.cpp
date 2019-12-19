@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Vehicle::Vehicle() : load(0) {}
+Vehicle::Vehicle(int capacity) : load(0), capacity(capacity) {}
 
 bool Vehicle::fits(int demand) const {
     cout << "Vehicle capacity is " << capacity << endl;
@@ -38,7 +38,11 @@ Customer Vehicle::remove(list<Customer>::iterator i) {
    return node; 
 }
 
-void Vehicle::add(Customer node, list<Customer>::iterator i) {
+void Vehicle::add(Customer& node, list<Customer>::iterator i) {
     route.insert(i, node);
     load += node.demand;
+}
+
+void Vehicle::add(Customer& node) {
+    add(node, end());
 }
