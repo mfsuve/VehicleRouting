@@ -35,6 +35,6 @@ Customer Vehicle::remove(list<Customer>::iterator i) {
 }
 
 void Vehicle::add(Customer node, list<Customer>::iterator i) {
-    route.insert(next(i), node);
+    route.insert(i, node);
     load += node.demand;
 }

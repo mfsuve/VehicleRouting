@@ -15,7 +15,7 @@
 #include <cassert>
 
 // TODO: initialize cost with greedy solver
-TabuSearch::TabuSearch(const char* filename) : cost(0) {
+TabuSearch::TabuSearch(const char* filename) {
     ifstream file(filename);
     string line;
     getline(file, line);
@@ -98,7 +98,7 @@ int TabuSearch::updateToBestNeighbor(Vehicle vehicles[], TabuList& tabulist) {
     tabulist.makeTabu(bestToNodeIndex, next(bestToNodeIndex));
     // Switch the node from 'from' to 'to'
     Customer node = vehicles[bestFromIndex].remove(bestFromNodeIndex);
-    vehicles[bestToIndex].add(node, bestToNodeIndex);
+    vehicles[bestToIndex].add(node, next(bestToNodeIndex));
     // Return the cost
     return cost + bestNeighborCost;
 }
