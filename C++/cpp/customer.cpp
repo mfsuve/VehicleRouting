@@ -12,12 +12,13 @@ bool Customer::operator==(const Customer& customer) {
 
 bool Customer::isWarehouse() const {
     return id == 0;
+}
 
-double Customer::distance(Customer& to) {
+double Customer::distance(const Customer& to) const {
     return distances[to.id];
 }
 
-double Customer::distance(int i) {
+double Customer::distance(int i) const {
     return distances[i];
 }
 
