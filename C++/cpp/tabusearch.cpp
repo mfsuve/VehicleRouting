@@ -25,18 +25,16 @@ TabuSearch::TabuSearch(const char* filename) {
     double x, y, demand;
     int id = 0;
     for(; getline(file, line); ++id) {
+        if (line.empty() || line.find_first_not_of(' ') == string::npos) continue;
+        cout << "Read line: " << line << endl;
         in = istringstream(line);
         in >> demand >> x >> y;
         customers.emplace_back(id, demand, x, y);
-        for (Customer& customer : customers) { // TODO read customers into list (not a vector)
-            customers[id].addNeighbor(customer);
+        for (Customer& customer : customers) {
+            customers.back().addNeighbor(customer);
         }
     }
     file.close();
-    Vehicle::capacity = c;
-    Vehicle vehicles[N];
-    Greedy greedy(N, V);
-    cost = greedy.solve(customers, vehicles).cost;
 }
 
 int TabuSearch::calculateNeighborCost(list<Customer>::iterator fromNodeIndex, list<Customer>::iterator toNodeIndex) {
@@ -105,7 +103,14 @@ int TabuSearch::updateToBestNeighbor(Vehicle vehicles[], TabuList& tabulist) {
 
 void TabuSearch::solve(int maxIteration, int tenure) {
     TabuList tabulist(N, tenure);
-    int bestCost = numeric_limits<int>::max();
+
+
+    vector<Vehicle> vechiles;
+    Greedy greedy(N, V);
+    cost = greedy.solve(customers, vehicles).cost;
+
+
+    int bestCost = cost;
 
     int iteration = 0;
     while (iteration < maxIteration) {
