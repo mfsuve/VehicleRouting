@@ -9,6 +9,7 @@
 #include "../hpp/tabusearch.hpp"
 #include "../hpp/vehicle.hpp"
 #include "../hpp/customer.hpp"
+#include "../hpp/greedy.hpp"
 
 #include <iomanip>
 #include <cassert>
@@ -32,6 +33,10 @@ TabuSearch::TabuSearch(const char* filename) : cost(0) {
         }
     }
     file.close();
+    Vehicle::capacity = c;
+    Vehicle vehicles[N];
+    Greedy greedy(N, V);
+    cost = greedy.solve(customers, vehicles).cost;
 }
 
 int TabuSearch::calculateNeighborCost(list<Customer>::iterator fromNodeIndex, list<Customer>::iterator toNodeIndex) {
@@ -100,7 +105,6 @@ int TabuSearch::updateToBestNeighbor(Vehicle vehicles[], TabuList& tabulist) {
 
 void TabuSearch::solve(int maxIteration, int tenure) {
     TabuList tabulist(N, tenure);
-    Vehicle vehicles[N]; // TODO Initialize this with greedy solution
     int bestCost = numeric_limits<int>::max();
 
     int iteration = 0;
