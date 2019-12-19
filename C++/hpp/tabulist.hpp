@@ -2,6 +2,7 @@
 #define TABULIST_HPP
 #include <iostream>
 #include <vector>
+#include "../hpp/customer.hpp"
 
 using namespace std;
 
