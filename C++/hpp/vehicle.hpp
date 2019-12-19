@@ -9,9 +9,9 @@ class Vehicle {
 public:
     list<Customer> route;
     Vehicle();
-    bool fits(int demand);
-    bool Vehicle::fits(Customer& c);
-    bool Vehicle::fits(list<Customer>::iterator i);
+    bool fits(int demand) const;
+    bool fits(Customer& c) const;
+    bool fits(list<Customer>::iterator i) const;
     list<Customer>::iterator begin();
     list<Customer>::iterator end();
     Customer remove(list<Customer>::iterator i);
@@ -19,7 +19,6 @@ public:
     bool empty();
     static int capacity;
 private:
-    int capacity;
     int load;
 };
 #endif

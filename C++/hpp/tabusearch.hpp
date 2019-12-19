@@ -17,6 +17,6 @@ public:
 private:
     int cost;
     int updateToBestNeighbor(Vehicle vehicles[], TabuList& tabulist);
-    int TabuSearch::calculateNeighborCost(list<Customer>::iterator fromNodeIndex, list<Customer>::iterator toNodeIndex);
+    int calculateNeighborCost(list<Customer>::iterator fromNodeIndex, list<Customer>::iterator toNodeIndex);
 };
 #endif
