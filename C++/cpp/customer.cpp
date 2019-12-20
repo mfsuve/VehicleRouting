@@ -1,4 +1,5 @@
 #include <iostream>
+#include <list>
 #include <cmath>
 #include "../hpp/customer.hpp"
 
@@ -34,4 +35,12 @@ void Customer::addNeighbor(Customer& neighbor) {
         distances.push_back(distance);
         neighbor.distances.push_back(distance);
     }
+}
+
+int Customer::getX() {
+    return x;
+}
+
+int Customer::getY() {
+    return y;
 }
