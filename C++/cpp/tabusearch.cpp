@@ -52,11 +52,12 @@ double TabuSearch::updateToBestNeighbor(vector<Vehicle>& vehicles, TabuList& tab
     list<Customer>::iterator bestFromNodeIndex, bestToNodeIndex;
     // Iterate all vehicles (remove customer from)
     for (int fromIndex = 0; fromIndex < V; ++fromIndex) {
-        cout << "   -> From  Vehicle " << fromIndex << endl;
         Vehicle& from = vehicles[fromIndex];
         // Iterate all vehicles (add customer between index and index+1)
         for (int toIndex = 0; toIndex < V; ++toIndex) {
+            cout << "   -> From  Vehicle " << fromIndex << endl;
             cout << "   -> To    Vehicle " << toIndex << endl;
+            cout << "--------------------------------" << endl;
             Vehicle& to = vehicles[toIndex];
             // Iterate all customers on 'from' vehicle (Not removing the '0' node)
             for (auto fromNodeIndex = next(from.begin()), fromEnd = prev(from.end()); fromNodeIndex != fromEnd; ++fromNodeIndex) {
@@ -95,13 +96,18 @@ double TabuSearch::updateToBestNeighbor(vector<Vehicle>& vehicles, TabuList& tab
     // If not found, don't change anything
     if (!found)
         return cost;
+    cout << "Making the moves tabu" << endl;
     // Update tabulist
     tabulist.makeTabu(prev(bestFromNodeIndex), bestFromNodeIndex);
     tabulist.makeTabu(bestFromNodeIndex, next(bestFromNodeIndex));
     tabulist.makeTabu(bestToNodeIndex, next(bestToNodeIndex));
+    cout << "Doing the actual switching" << endl;
     // Switch the node from 'from' to 'to'
+    cout << "Removing from Vehicle " << bestFromIndex << " Customer " << bestFromNodeIndex->id << " ";
     Customer& node = vehicles[bestFromIndex].remove(bestFromNodeIndex);
+    cout << "and moving it to Vehicle " << bestToIndex << " between " << bestToNodeIndex->id << " and " << next(bestToNodeIndex)->id << endl;
     vehicles[bestToIndex].add(node, next(bestToNodeIndex));
+    cout << "Returning" << endl;
     // Return the cost
     return cost + bestNeighborCost;
 }
@@ -134,6 +140,7 @@ void TabuSearch::solve(int maxIteration, int tenure) {
     int iteration = 0;
     while (iteration < maxIteration) {
         cost = updateToBestNeighbor(vehicles, tabulist);
+        cout << "After updating to best neighbor, the cost is " << cost << endl;
         if (cost < bestCost) {
             iteration = 0;
             // TODO Save best solution

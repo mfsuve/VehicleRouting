@@ -34,11 +34,15 @@ Customer& Vehicle::remove(list<Customer>::iterator i) {
    Customer& node = *i;
    route.erase(i);
    load -= node.demand;
-   return node; 
+   return node;
 }
 
 void Vehicle::add(Customer& node, list<Customer>::iterator i) {
+    cout << node.id << endl;
+    cout << i->id << endl;
+
     route.insert(i, node);
+    cout << "Insert complete!" << endl;
     load += node.demand;
 }
 
