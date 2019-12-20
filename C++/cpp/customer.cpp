@@ -14,8 +14,11 @@ bool Customer::isWarehouse() const {
     return id == 0;
 }
 
+double Customer::distance(list<Customer>::iterator i) const {
+    return distance(*i);
+}
+
 double Customer::distance(const Customer& to) const {
-    cout << distances.size() << endl;
     return distances[to.id];
 }
 
