@@ -8,7 +8,7 @@
 
 using namespace std;
 
-Greedy::Greedy(int N, int V) : cost(0), N(N), V(V), numUnvisited(N) {}
+Greedy::Greedy(int N, int V) : cost(0), N(N), V(V), numUnvisited(N - 1) {}
 
 pair<double, list<Customer>::iterator> Greedy::bestNeighbor(list<Customer>& customers, Customer& current, Vehicle& vehicle) {
     double minCost = numeric_limits<double>::max(), candidateCost;
