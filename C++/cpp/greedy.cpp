@@ -63,7 +63,7 @@ Greedy& Greedy::solve(list<Customer>& customers, vector<Vehicle>& vehicles) {
             }
         }
         else {
-            cout << "Vehicle " << vehicleIndex << " goes to Customer " << candidate->id << " at (" << candidate->x << ", " << candidate->y << ") with cost of " << minCost << endl;
+            cout << "Vehicle " << vehicleIndex << " goes to Customer " << candidate->id << " at (" << candidate->getX() << ", " << candidate->getY() << ") with cost of " << minCost << endl;
             vehicle.add(candidate);
             current = candidate;
             candidate->visited = true;
@@ -85,5 +85,10 @@ Greedy& Greedy::solve(list<Customer>& customers, vector<Vehicle>& vehicles) {
     cout << "Vehicle " << vehicleIndex << " returns to warehouse with cost " << current->distance(0) << endl;
     cost += current->distance(0);
     vehicles[vehicleIndex].add(customers.front());
+
+    // Returning remaining vehicles to warehouse for tabusearch
+    for (int i = vehicleIndex + 1; i < V; ++i)
+        vehicles[i].add(customers.front());
+
     return *this;
 }
