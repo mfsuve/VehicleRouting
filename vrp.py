@@ -17,7 +17,7 @@ def show_customers(customers, filename=None):
     df['role'] = ['center'] + ['customer'] * (customers.shape[0] - 1)
     ax = sns.scatterplot(x='x', y='y', data=df, size='demand', hue='role', legend=False)
     if filename is not None:
-        ax.set_title(filename.split('\\')[-1])
+        ax.set_title(' '.join(filename.split('/')[-1].split('_')))
     plt.show()
 
             
