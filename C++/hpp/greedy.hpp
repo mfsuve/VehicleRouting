@@ -8,7 +8,7 @@ using namespace std;
 
 class Greedy {
 public:
-    int cost;
+    double cost;
     Greedy(int N, int V);
     Greedy& solve(list<Customer>& customers, vector<Vehicle>& vehicles);
     pair<double, list<Customer>::iterator> bestNeighbor(list<Customer>& customers, Customer& current, Vehicle& vehicle);
