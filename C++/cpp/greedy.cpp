@@ -74,4 +74,8 @@ Greedy& Greedy::solve(list<Customer>& customers, vector<Vehicle>& vehicles) {
         }
 
     }
+    cout << "Vehicle " << vehicleIndex << " returns to warehouse with cost " << current->distance(0) << endl;
+    cost += current->distance(0);
+    vehicles[vehicleIndex].add(customers.front());
+    return *this;
 }
