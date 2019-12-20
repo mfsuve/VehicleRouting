@@ -15,8 +15,8 @@ public:
     TabuSearch(const char* filename);
     void solve(int iterations, int tenure);
 private:
-    int cost;
-    int updateToBestNeighbor(vector<Vehicle>& vehicles, TabuList& tabulist);
-    int calculateNeighborCost(list<Customer>::iterator fromNodeIndex, list<Customer>::iterator toNodeIndex);
+    double cost;
+    double updateToBestNeighbor(vector<Vehicle>& vehicles, TabuList& tabulist);
+    double calculateNeighborCost(list<Customer>::iterator fromNodeIndex, list<Customer>::iterator toNodeIndex);
 };
 #endif
