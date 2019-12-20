@@ -36,7 +36,7 @@ TabuSearch::TabuSearch(const char* filename) {
     file.close();
 }
 
-int TabuSearch::calculateNeighborCost(list<Customer>::iterator fromNodeIndex, list<Customer>::iterator toNodeIndex) {
+double TabuSearch::calculateNeighborCost(list<Customer>::iterator fromNodeIndex, list<Customer>::iterator toNodeIndex) {
     return prev(fromNodeIndex)->distance(next(fromNodeIndex))
          + toNodeIndex->distance(fromNodeIndex)
          + fromNodeIndex->distance(next(toNodeIndex))
@@ -45,9 +45,9 @@ int TabuSearch::calculateNeighborCost(list<Customer>::iterator fromNodeIndex, li
          - toNodeIndex->distance(next(toNodeIndex));
 }
 
-int TabuSearch::updateToBestNeighbor(vector<Vehicle>& vehicles, TabuList& tabulist) {
+double TabuSearch::updateToBestNeighbor(vector<Vehicle>& vehicles, TabuList& tabulist) {
     bool found = false;
-    int bestNeighborCost = numeric_limits<int>::max(), neighborCost;
+    double bestNeighborCost = numeric_limits<double>::max(), neighborCost;
     int bestFromIndex, bestToIndex;
     list<Customer>::iterator bestFromNodeIndex, bestToNodeIndex;
     // Iterate all vehicles (remove customer from)
@@ -68,10 +68,13 @@ int TabuSearch::updateToBestNeighbor(vector<Vehicle>& vehicles, TabuList& tabuli
                                 tabulist.isTabu(fromNodeIndex, next(toNodeIndex)))
                                 continue;
                             // Calculate increase in cost
+                            cout << "Checking cost when Customer " << fromNodeIndex->id << " moves from Vehicle " << fromIndex << " to Customers between " << toNodeIndex->id << " and " << next(toNodeIndex)->id << " of Vehicle " << toIndex << "." << endl;
                             neighborCost = calculateNeighborCost(fromNodeIndex, toNodeIndex);
+                            cout << "neighborCost: " << neighborCost << endl;
                             // If better, save
                             if (neighborCost < bestNeighborCost) {
                                 bestNeighborCost = neighborCost;
+                                cout << "   Found a neighbor! Original Cost: " << cost << ". Best cost: " << cost + bestNeighborCost << "." << endl;
                                 bestFromIndex = fromIndex;
                                 bestToIndex = toIndex;
                                 bestFromNodeIndex = fromNodeIndex;
@@ -84,6 +87,7 @@ int TabuSearch::updateToBestNeighbor(vector<Vehicle>& vehicles, TabuList& tabuli
             }
         }
     }
+    cout << "TabuList step" << endl;
     // lower the tabu tenures
     tabulist.step();
     // If not found, don't change anything
@@ -108,11 +112,12 @@ void TabuSearch::solve(int maxIteration, int tenure) {
         vehicles.emplace_back(c);
     Greedy greedy(N, V);
     cost = greedy.solve(customers, vehicles).cost;
-    int bestCost = cost;
+    double bestCost = cost;
 
     cout << "**** Greedy Done ****" << endl;
 
-    int i = 0;
+    int i = -1;
+    cout << "vehicles.size(): " << vehicles.size() << endl;
     for (Vehicle& vehicle : vehicles) {
         cout << ++i << ". vehicle route: ";
         for (Customer& customer : vehicle.route) {
@@ -120,6 +125,8 @@ void TabuSearch::solve(int maxIteration, int tenure) {
         }
         cout << endl;
     }
+
+    cout << "Best cost: " << bestCost << endl;
 
     int iteration = 0;
     while (iteration < maxIteration) {
