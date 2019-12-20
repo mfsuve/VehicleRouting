@@ -7,7 +7,6 @@ using namespace std;
 Vehicle::Vehicle(int capacity) : load(0), capacity(capacity) {}
 
 bool Vehicle::fits(int demand) const {
-    cout << "Vehicle capacity is " << capacity << endl;
     return capacity >= load + demand;
 }
 
@@ -31,8 +30,8 @@ bool Vehicle::empty() {
     return route.empty();
 }
 
-Customer Vehicle::remove(list<Customer>::iterator i) {
-   Customer node = *i;
+Customer& Vehicle::remove(list<Customer>::iterator i) {
+   Customer& node = *i;
    route.erase(i);
    load -= node.demand;
    return node; 
@@ -45,4 +44,16 @@ void Vehicle::add(Customer& node, list<Customer>::iterator i) {
 
 void Vehicle::add(Customer& node) {
     add(node, end());
+}
+
+void Vehicle::add(list<Customer>::iterator node, list<Customer>::iterator i) {
+    add(*node, i);
+}
+
+void Vehicle::add(list<Customer>::iterator node) {
+    add(*node);
+}
+
+int Vehicle::getLoad() {
+    return load;
 }
