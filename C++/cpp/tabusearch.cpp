@@ -51,10 +51,12 @@ double TabuSearch::updateToBestNeighbor(vector<Vehicle>& vehicles, TabuList& tab
     int bestFromIndex, bestToIndex;
     list<Customer>::iterator bestFromNodeIndex, bestToNodeIndex;
     // Iterate all vehicles (remove customer from)
-    for (int fromIndex = 0; fromIndex < N; ++fromIndex) {
+    for (int fromIndex = 0; fromIndex < V; ++fromIndex) {
+        cout << "   -> From  Vehicle " << fromIndex << endl;
         Vehicle& from = vehicles[fromIndex];
         // Iterate all vehicles (add customer between index and index+1)
-        for (int toIndex = 0; toIndex < N; ++toIndex) {
+        for (int toIndex = 0; toIndex < V; ++toIndex) {
+            cout << "   -> To    Vehicle " << toIndex << endl;
             Vehicle& to = vehicles[toIndex];
             // Iterate all customers on 'from' vehicle (Not removing the '0' node)
             for (auto fromNodeIndex = next(from.begin()), fromEnd = prev(from.end()); fromNodeIndex != fromEnd; ++fromNodeIndex) {
@@ -126,6 +128,7 @@ void TabuSearch::solve(int maxIteration, int tenure) {
         cout << endl;
     }
 
+    cout << "**** Started TabuSearch ****" << endl;
     cout << "Best cost: " << bestCost << endl;
 
     int iteration = 0;
