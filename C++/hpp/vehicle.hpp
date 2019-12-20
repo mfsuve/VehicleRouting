@@ -15,12 +15,14 @@ public:
     bool fits(list<Customer>::iterator i) const;
     list<Customer>::iterator begin();
     list<Customer>::iterator end();
-    Customer remove(list<Customer>::iterator i);
+    Customer& remove(list<Customer>::iterator i);
     void add(Customer& node, list<Customer>::iterator i);
     void add(Customer& node);
+    void add(list<Customer>::iterator node, list<Customer>::iterator i);
+    void add(list<Customer>::iterator node);
     bool empty();
+    int getLoad();
 private:
-    int capacity;
-    int load;
+    int capacity, load;
 };
 #endif
