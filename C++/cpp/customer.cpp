@@ -7,6 +7,11 @@ using namespace std;
 
 Customer::Customer(int id, int demand, double x, double y) : id(id), demand(demand), x(x), y(y), visited(false) {}
 
+Customer::Customer(const Customer& other) : id(other.id), demand(other.demand), x(other.x), y(other.y), visited(other.visited) {
+    for (double d : other.distances)
+        distances.push_back(d);
+}
+
 bool Customer::operator==(const Customer& customer) {
     return id == customer.id;
 }
