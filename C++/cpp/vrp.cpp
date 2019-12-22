@@ -4,6 +4,9 @@
 #include "../hpp/vehicle.hpp"
 #include "../hpp/customer.hpp"
 
+#include <bits/stdc++.h>
+#include <exception>
+
 using namespace std;
 
 int main(int argc, char *argv[]) {
@@ -13,7 +16,9 @@ int main(int argc, char *argv[]) {
     }
     srand(0);
     TabuSearch solver(argv[1], false);
-    double bestCost = solver.solve(800, 100, true);
+    // cerr << "Created tabu search" << endl;
+    double bestCost = solver.solve(1000, 30, false);
+    // cerr << "solved" << endl;
     
     cout << bestCost << endl;
     int i = 0;

@@ -46,6 +46,7 @@ Greedy& Greedy::solve(list<Customer*>& customers, vector<Vehicle>& vehicles, ofs
         auto candidate = cost_customer.second;
 
         if (candidate == customers.end()) {
+            // cerr << "No customer fits to Vehicle " << vehicleIndex << ", ";
             if (verbose) cout << "No customer fits to Vehicle " << vehicleIndex << ", ";
             // No customer fits
             if (vehicleIndex + 1 < V) { // there are still vehicles
@@ -53,14 +54,17 @@ Greedy& Greedy::solve(list<Customer*>& customers, vector<Vehicle>& vehicles, ofs
                     vehicle.add(customers.front());
                     cost += (*current)->distance(0);
                     if (verbose) cout << "Vehicle " << vehicleIndex << " returns to warehouse and ";
+                    // cerr << "Vehicle " << vehicleIndex << " returns to warehouse and ";
                 }
                 ++vehicleIndex;
                 current = customers.begin();
                 if (verbose) cout << "going to the next vehicle" << endl;
+                // cerr << "going to the next vehicle" << endl;
             }
             else {
                 // We DO NOT have any more vehicle to assign. The problem is unsolved under these parameters
                 if (verbose) cout << "The rest customers do not fit in any Vehicle, the problem cannot be resolved under these constrains!" << endl;
+                // cerr << "The rest customers do not fit in any Vehicle, the problem cannot be resolved under these constrains!" << endl;
                 exit(EXIT_FAILURE);
             }
         }
@@ -76,6 +80,7 @@ Greedy& Greedy::solve(list<Customer*>& customers, vector<Vehicle>& vehicles, ofs
                 }
                 output << "-" << endl;
             }
+            // cerr << "Vehicle " << vehicleIndex << " goes to Customer " << (*candidate)->id << " at (" << (*candidate)->getX() << ", " << (*candidate)->getY() << ") with cost of " << minCost << endl;
             if (verbose) cout << "Vehicle " << vehicleIndex << " goes to Customer " << (*candidate)->id << " at (" << (*candidate)->getX() << ", " << (*candidate)->getY() << ") with cost of " << minCost << endl;
             vehicle.add(candidate);
             current = candidate;
@@ -86,6 +91,8 @@ Greedy& Greedy::solve(list<Customer*>& customers, vector<Vehicle>& vehicles, ofs
                 cout << "       Load of Vehicle " << vehicleIndex << ": " << vehicle.getLoad() << endl;
                 cout << "       " << numUnvisited << " customers remaining..." << endl;
             }
+            // cerr << "       Load of Vehicle " << vehicleIndex << ": " << vehicle.getLoad() << endl;
+            // cerr << "       " << numUnvisited << " customers remaining..." << endl;
         }
     }
     if (verbose) cout << "Vehicle " << vehicleIndex << " returns to warehouse with cost " << (*current)->distance(0) << endl;
