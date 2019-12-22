@@ -11,11 +11,10 @@ using namespace std;
 class TabuSearch {
 public:
     int N, V, c;
-    list<Customer> customers; // TODO can this be private?
-    TabuSearch(const char* filename);
-    void solve(int iterations, int tenure);
+    TabuSearch(const char* filename, bool verbose=false);
 private:
     double cost;
+    bool verbose;
     double updateToBestNeighbor(vector<Vehicle>& vehicles, TabuList& tabulist);
     double calculateNeighborCost(list<Customer>::iterator fromNodeIndex, list<Customer>::iterator toNodeIndex);
 };

@@ -14,14 +14,13 @@
 #include <iomanip>
 #include <cassert>
 
-// TODO: initialize cost with greedy solver
-TabuSearch::TabuSearch(const char* filename) {
+TabuSearch::TabuSearch(const char* filename, bool verbose) : verbose(verbose) {
     ifstream file(filename);
     string line;
     getline(file, line);
     istringstream in(line);
     in >> N >> V >> c;
-    cout << N << " customers, " << V << " vehicles with capacity " << c << endl;
+    if (verbose) cout << N << " customers, " << V << " vehicles with capacity " << c << endl;
     double x, y, demand;
     int id = 0;
     for(; getline(file, line); ++id) {
@@ -46,6 +45,17 @@ double TabuSearch::calculateNeighborCost(list<Customer>::iterator fromNodeIndex,
 }
 
 double TabuSearch::updateToBestNeighbor(vector<Vehicle>& vehicles, TabuList& tabulist) {
+    if (verbose) {
+        cout << "**** Started to update to the next best neighbor ****" << endl;
+        for (int ii = 0; ii < V; ++ii) {
+            Vehicle& vehicle = vehicles[ii];
+            cout << "Vehicle " << ii << ": ";
+            for (Customer* customer : vehicle.route) {
+                cout << " " << customer->id;
+            }
+            cout << endl;
+        }
+    }
     bool found = false;
     double bestNeighborCost = numeric_limits<double>::max(), neighborCost;
     int bestFromIndex, bestToIndex;
@@ -68,16 +78,18 @@ double TabuSearch::updateToBestNeighbor(vector<Vehicle>& vehicles, TabuList& tab
                             // If not tabu
                             if (tabulist.isTabu(prev(fromNodeIndex), next(fromNodeIndex)) ||
                                 tabulist.isTabu(toNodeIndex, fromNodeIndex) ||
-                                tabulist.isTabu(fromNodeIndex, next(toNodeIndex)))
+                                tabulist.isTabu(fromNodeIndex, next(toNodeIndex))) {
+                                    if (verbose) cout << "Moves are tabu. Continuing to next ones." << endl;                                    
                                 continue;
+                                }
                             // Calculate increase in cost
-                            cout << "Checking cost when Customer " << fromNodeIndex->id << " moves from Vehicle " << fromIndex << " to Customers between " << toNodeIndex->id << " and " << next(toNodeIndex)->id << " of Vehicle " << toIndex << "." << endl;
+                            if (verbose) cout << "Checking cost when Customer " << (*fromNodeIndex)->id << " moves from Vehicle " << fromIndex << " to Customers between " << (*toNodeIndex)->id << " and " << (*next(toNodeIndex))->id << " of Vehicle " << toIndex << "." << endl;
                             neighborCost = calculateNeighborCost(fromNodeIndex, toNodeIndex);
-                            cout << "neighborCost: " << neighborCost << endl;
+                            if (verbose) cout << "neighborCost: " << neighborCost << endl;
                             // If better, save
                             if (neighborCost < bestNeighborCost) {
                                 bestNeighborCost = neighborCost;
-                                cout << "   Found a neighbor! Original Cost: " << cost << ". Best cost: " << cost + bestNeighborCost << "." << endl;
+                                if (verbose) cout << "   Found a neighbor! Original Cost: " << cost << ". Best cost: " << cost + bestNeighborCost << "." << endl;
                                 bestFromIndex = fromIndex;
                                 bestToIndex = toIndex;
                                 bestFromNodeIndex = fromNodeIndex;
@@ -90,24 +102,23 @@ double TabuSearch::updateToBestNeighbor(vector<Vehicle>& vehicles, TabuList& tab
             }
         }
     }
-    cout << "TabuList step" << endl;
+    if (verbose) cout << "TabuList step" << endl;
     // lower the tabu tenures
     tabulist.step();
     // If not found, don't change anything
-    if (!found)
+    if (!found) {
+        if (verbose) cout << "Not found, returning old cost." << endl;
         return cost;
-    cout << "Making the moves tabu" << endl;
+    }
+    if (verbose) cout << "Making the moves tabu" << endl;
     // Update tabulist
     tabulist.makeTabu(prev(bestFromNodeIndex), bestFromNodeIndex);
     tabulist.makeTabu(bestFromNodeIndex, next(bestFromNodeIndex));
     tabulist.makeTabu(bestToNodeIndex, next(bestToNodeIndex));
-    cout << "Doing the actual switching" << endl;
     // Switch the node from 'from' to 'to'
-    cout << "Removing from Vehicle " << bestFromIndex << " Customer " << bestFromNodeIndex->id << " ";
-    Customer& node = vehicles[bestFromIndex].remove(bestFromNodeIndex);
-    cout << "and moving it to Vehicle " << bestToIndex << " between " << bestToNodeIndex->id << " and " << next(bestToNodeIndex)->id << endl;
+    if (verbose) cout << "Removing from Vehicle " << bestFromIndex << " Customer " << (*bestFromNodeIndex)->id << " ";
+    if (verbose) cout << "and moving it to Vehicle " << bestToIndex << " between " << (*bestToNodeIndex)->id << " and " << (*next(bestToNodeIndex))->id << endl;
     vehicles[bestToIndex].add(node, next(bestToNodeIndex));
-    cout << "Returning" << endl;
     // Return the cost
     return cost + bestNeighborCost;
 }
@@ -122,30 +133,47 @@ void TabuSearch::solve(int maxIteration, int tenure) {
     cost = greedy.solve(customers, vehicles).cost;
     double bestCost = cost;
 
-    cout << "**** Greedy Done ****" << endl;
+    if (verbose) cout << "**** Greedy Done ****" << endl;
 
+    if (verbose) {
     int i = -1;
     cout << "vehicles.size(): " << vehicles.size() << endl;
     for (Vehicle& vehicle : vehicles) {
         cout << ++i << ". vehicle route: ";
-        for (Customer& customer : vehicle.route) {
-            cout << " " << customer.id;
+            for (Customer* customer : vehicle.route) {
+                cout << " " << customer->id;
         }
         cout << endl;
     }
 
-    cout << "**** Started TabuSearch ****" << endl;
+        cout << "**** Started TabuSearch | maxIteration: " << maxIteration << " ****" << endl;
     cout << "Best cost: " << bestCost << endl;
+    }
 
     int iteration = 0;
     while (iteration < maxIteration) {
+        if (verbose) cout << " -> iteration: " << iteration << endl;
         cost = updateToBestNeighbor(vehicles, tabulist);
-        cout << "After updating to best neighbor, the cost is " << cost << endl;
+        if (verbose) cout << "After updating to best neighbor, the cost is " << cost << "." << endl;
         if (cost < bestCost) {
+            bestCost = cost;
+            bestVehicles = vehicles;
             iteration = 0;
-            // TODO Save best solution
         }
         else
-            iteration++;
+            ++iteration;
+        if (verbose) {
+            cout << "********* Best Vehicles so far *********" << endl;
+            for (int ii = 0; ii < V; ++ii) {
+                Vehicle& vehicle = vehicles[ii];
+                cout << "          Vehicle " << ii << ": ";
+                for (Customer* customer : vehicle.route) {
+                    cout << " " << customer->id;
+                }
+                cout << endl;
+            }
+            output.close();
+        }
     }
+    return bestCost;
 }
