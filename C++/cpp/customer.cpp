@@ -20,32 +20,32 @@ bool Customer::isWarehouse() const {
     return id == 0;
 }
 
-double Customer::distance(list<Customer>::iterator i) const {
+double Customer::distance(list<Customer*>::iterator i) const {
     return distance(*i);
 }
 
-double Customer::distance(const Customer& to) const {
-    return distances[to.id];
+double Customer::distance(const Customer* to) const {
+    return distances[to->id];
 }
 
 double Customer::distance(int i) const {
     return distances[i];
 }
 
-void Customer::addNeighbor(Customer& neighbor) {
-    if (neighbor.id == id)
+void Customer::addNeighbor(Customer* neighbor) {
+    if (neighbor == this)
         distances.push_back(0);
     else {
-        double distance = hypot(x - neighbor.x, y - neighbor.y);
+        double distance = hypot(x - neighbor->getX(), y - neighbor->getY());
         distances.push_back(distance);
-        neighbor.distances.push_back(distance);
+        neighbor->distances.push_back(distance);
     }
 }
 
-int Customer::getX() {
+int Customer::getX() const {
     return x;
 }
 
-int Customer::getY() {
+int Customer::getY() const {
     return y;
 }

@@ -8,17 +8,19 @@ using namespace std;
 
 class Customer {
 public:
-    int id, demand, visited;
+    int id, demand;
+    bool visited;
+    vector<double> distances;   // TODO make this private
     Customer(int id, int demand, double x, double y);
-    double distance(list<Customer>::iterator i) const;
-    double distance(const Customer& to) const;
+    Customer(const Customer& other);
+    double distance(list<Customer*>::iterator i) const;
+    double distance(const Customer* to) const;
     double distance(int i) const;
-    void addNeighbor(Customer& neighbor);
+    void addNeighbor(Customer* neighbor);
     bool operator==(const Customer& customer);
     bool isWarehouse() const;
-    vector<double> distances;   // TODO make this private
-    int getX();
-    int getY();
+    int getX() const;
+    int getY() const;
 private:
     double x, y;
 };
