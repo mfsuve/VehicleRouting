@@ -121,7 +121,6 @@ double TabuSearch::updateToBestNeighbor(vector<Vehicle>& vehicles, TabuList& tab
             }
         }
     }
-    if (verbose) cout << "TabuList step" << endl;
     // lower the tabu tenures
     tabulist.step();
     // If not found, don't change anything

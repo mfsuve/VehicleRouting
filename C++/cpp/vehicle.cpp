@@ -30,6 +30,12 @@ bool Vehicle::empty() const {
     return route.empty();
 }
 
+void Vehicle::removeLast() {
+    auto removeIterator = prev(end());
+    load -= (*removeIterator)->demand;
+    route.erase(removeIterator);
+}
+
 Customer* Vehicle::remove(list<Customer*>::const_iterator i) {
    Customer* node = *i;
    route.erase(i);
@@ -38,23 +44,7 @@ Customer* Vehicle::remove(list<Customer*>::const_iterator i) {
 }
 
 void Vehicle::add(Customer* node, list<Customer*>::const_iterator i) {
-
-    // cout << "Entering add customer with iterator" << endl;
-
-    // for (const Customer* customer : route) {
-        // cout << " ********* " << customer->id << " " << customer->distances.size() << endl;
-    // }
-    // cout << "-------------------------------------------------------" << endl;
-
-    // cout << "inside - node" << node->id << ".distances.size(): " << node->distances.size() << "     " << node << endl;
     route.insert(i, node);
-    // cout << "inside - node" << node->id << ".distances.size(): " << node->distances.size() << "     " << node << endl;
-
-    // for (Customer* customer : route) {
-        // cout << " ********* " << customer->id << " " << customer->distances.size() << endl;
-    // }
-    // cout << "-------------------------------------------------------" << endl;
-
     load += node->demand;
 }
 
@@ -70,14 +60,11 @@ void Vehicle::add(list<Customer*>::const_iterator node) {
     add(*node);
 }
 
-int Vehicle::getLoad() const {
-    return load;
+void Vehicle::clear() {
+    route.clear();
+    load = 0;
 }
 
-bool Vehicle::anyZeroCustomer() {
-    for (const Customer* customer : route) {
-        if (customer->distances.size() == 0)
-            return true;
-    }
-    return false;
+int Vehicle::getLoad() const {
+    return load;
 }
