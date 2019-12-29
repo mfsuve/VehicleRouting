@@ -17,6 +17,7 @@ public:
     bool fits(list<Customer*>::const_iterator i) const;
     list<Customer*>::const_iterator begin();
     list<Customer*>::const_iterator end();
+    void removeLast();
     Customer* remove(list<Customer*>::const_iterator i);
     void add(Customer* node, list<Customer*>::const_iterator i);
     void add(Customer* node);
@@ -24,7 +25,7 @@ public:
     void add(list<Customer*>::const_iterator node);
     bool empty() const;
     int getLoad() const;
-    bool anyZeroCustomer();
+    void clear();
 private:
     int capacity, load;
 };
