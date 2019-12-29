@@ -13,7 +13,7 @@ public:
     vector<double> distances;   // TODO make this private
     Customer(int id, int demand, double x, double y);
     Customer(const Customer& other);
-    double distance(list<Customer*>::iterator i) const;
+    double distance(list<Customer*>::const_iterator i) const;
     double distance(const Customer* to) const;
     double distance(int i) const;
     void addNeighbor(Customer* neighbor);

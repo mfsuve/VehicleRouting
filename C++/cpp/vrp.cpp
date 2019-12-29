@@ -16,9 +16,7 @@ int main(int argc, char *argv[]) {
     }
     srand(0);
     TabuSearch solver(argv[1], false);
-    // cerr << "Created tabu search" << endl;
-    double bestCost = solver.solve(1000, 30, false);
-    // cerr << "solved" << endl;
+    double bestCost = solver.solve(3000000, 50, true);
     
     cout << bestCost << endl;
     int i = 0;
