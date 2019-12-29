@@ -20,7 +20,7 @@ bool Customer::isWarehouse() const {
     return id == 0;
 }
 
-double Customer::distance(list<Customer*>::iterator i) const {
+double Customer::distance(list<Customer*>::const_iterator i) const {
     return distance(*i);
 }
 
