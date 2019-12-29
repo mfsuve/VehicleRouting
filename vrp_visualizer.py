@@ -27,6 +27,8 @@ def show_progress(customers, d, filename):
     bestKey, bestValue = list(d.items())[0]
     
     for key, value in d.items():
+        if key[1] != 0:
+            continue
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(21, 10))
         ax1.set_title(f'Loop: {key[0]}, Iteration: {key[1]}, cost: {key[2]}')
         
@@ -109,16 +111,21 @@ def get_progress(V, filename):
         print('Please run the c++ code first.')
         exit()
 
+    print('Progress created!')
     return result
             
 def main(filename):
     customers, V, c = load(filename)
+    print('Loaded!')
     show_progress(customers, get_progress(V, filename), filename)
     # show_customers(customers, filename)
 
             
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print(f'Usage: {sys.argv[0]} input_file')
+    if len(sys.argv) < 2:
+        print(f'Usage: {sys.argv[0]} input_file [-s]')
         sys.exit()
+    s = False
+    if len(sys.argv) > 2:
+        s = sys.argv[2] == '-s'
     main(sys.argv[1])
