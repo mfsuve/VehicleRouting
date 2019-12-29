@@ -29,10 +29,64 @@ pair<double, list<Customer*>::iterator> Greedy::bestNeighbor(list<Customer*>& cu
     return result;
 }
 
+bool Greedy::solve_recursive(list<Customer*>::iterator customer, vector<Vehicle>& vehicles, list<Customer*>::iterator end, list<Customer*>::iterator begin) {
+    // if (verbose) cout << "Called for Customer " << (*customer)->id << endl;
+    if (customer == end) {
+        // if (verbose) cout << "Returned true for Customer " << (*customer)->id << endl;
+        return true;
+    }
+    bool success = false;
+    for (int v = 0; v < vehicles.size(); ++v) {
+        if (vehicles[v].fits(customer)) {
+            // if (verbose) cout << "Added Customer " << (*customer)->id << " to Vehicle " << v << endl;
+            // if (verbose) cout << "    Load of Vehicle " << v << ": " << vehicles[v].load << "/" << vehicles[v].capacity << endl;
+            // if (verbose) cout << "        Demand of Customer " << (*customer)->id << ": " << (*customer)->demand << endl;
+            vehicles[v].add(customer);
+            // if (verbose) cout << "    Load of Vehicle " << v << ": " << vehicles[v].load << "/" << vehicles[v].capacity << endl;
+            success = solve_recursive(next(customer), vehicles, end, begin);
+            if (success)
+                break;
+            // if (verbose) cout << "Adding Customer " << (*customer)->id << " to Vehicle " << v << " didn't work" << endl;
+            // if (verbose) cout << "Removed Customer " << (*customer)->id << " from Vehicle " << v << endl;
+            // if (verbose) cout << "    Load of Vehicle " << v << ": " << vehicles[v].load << "/" << vehicles[v].capacity << endl;
+            // if (verbose) cout << "        Demand of Customer " << (*customer)->id << ": " << (*customer)->demand << endl;
+            vehicles[v].removeLast();
+            // if (verbose) cout << "    Load of Vehicle " << v << ": " << vehicles[v].load << "/" << vehicles[v].capacity << endl;
+        }
+        // else
+            // if (verbose) cout << "Customer " << (*customer)->id << " didn't fit to Vehicle " << v << endl;
+    }
+    // if (verbose) cout << " ** End of loop for Customer " << (*customer)->id << " with " << (success ? "success" : "fail") << endl;
+    return success;
+}
+
+void Greedy::solve_guarantee(list<Customer*>& customers, vector<Vehicle>& vehicles) {
+    for (Vehicle& v : vehicles) {
+        v.clear(); // clearing the routes
+        v.add(customers.front());
+    }
+    if (verbose) cout << "Cleared all vehicle routes" << endl;
+    bool success = solve_recursive(next(customers.begin()), vehicles, customers.end(), customers.begin());
+    cost = 0;
+    for (Vehicle& v : vehicles) {
+        v.add(customers.front());
+        auto end = prev(v.end());
+        for (auto it = v.begin(); it != end; ++it) {
+            Customer* c = *it;
+            cost += c->distance(next(it));
+        }
+    }
+    if (verbose)
+        if (success)
+            cout << "Solved with guaratee function! Cost: " << cost << endl;
+        else
+            cout << "Couldn't solve even with the guarantee function!" << endl;
+}
+
 Greedy& Greedy::solve(list<Customer*>& customers, vector<Vehicle>& vehicles, ofstream& output, bool save) {
     int i = 0;
     for (Vehicle& vehicle : vehicles)
-        if (vehicle.empty()) 
+        if (vehicle.empty())
             vehicle.add(customers.front());
     customers.front()->visited = true;
 
@@ -64,8 +118,21 @@ Greedy& Greedy::solve(list<Customer*>& customers, vector<Vehicle>& vehicles, ofs
             else {
                 // We DO NOT have any more vehicle to assign. The problem is unsolved under these parameters
                 if (verbose) cout << "The rest customers do not fit in any Vehicle, the problem cannot be resolved under these constrains!" << endl;
+                if (verbose) cout << "Trying with guarantee function." << endl;
                 // cerr << "The rest customers do not fit in any Vehicle, the problem cannot be resolved under these constrains!" << endl;
-                exit(EXIT_FAILURE);
+                solve_guarantee(customers, vehicles);
+                if (verbose) {
+                    int i = 0;
+                    for (Vehicle& v : vehicles) {
+                        cout << "Vehicle " << i << ": ";
+                        for (Customer* c : v.route) {
+                            cout << c->id << " ";
+                        }
+                        cout << endl;
+                        ++i;
+                    }
+                }
+                return *this;
             }
         }
         else {
@@ -80,7 +147,6 @@ Greedy& Greedy::solve(list<Customer*>& customers, vector<Vehicle>& vehicles, ofs
                 }
                 output << "-" << endl;
             }
-            // cerr << "Vehicle " << vehicleIndex << " goes to Customer " << (*candidate)->id << " at (" << (*candidate)->getX() << ", " << (*candidate)->getY() << ") with cost of " << minCost << endl;
             if (verbose) cout << "Vehicle " << vehicleIndex << " goes to Customer " << (*candidate)->id << " at (" << (*candidate)->getX() << ", " << (*candidate)->getY() << ") with cost of " << minCost << endl;
             vehicle.add(candidate);
             current = candidate;
@@ -91,8 +157,6 @@ Greedy& Greedy::solve(list<Customer*>& customers, vector<Vehicle>& vehicles, ofs
                 cout << "       Load of Vehicle " << vehicleIndex << ": " << vehicle.getLoad() << endl;
                 cout << "       " << numUnvisited << " customers remaining..." << endl;
             }
-            // cerr << "       Load of Vehicle " << vehicleIndex << ": " << vehicle.getLoad() << endl;
-            // cerr << "       " << numUnvisited << " customers remaining..." << endl;
         }
     }
     if (verbose) cout << "Vehicle " << vehicleIndex << " returns to warehouse with cost " << (*current)->distance(0) << endl;
