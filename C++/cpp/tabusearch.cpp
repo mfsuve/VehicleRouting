@@ -129,10 +129,10 @@ double TabuSearch::updateToBestNeighbor(vector<Vehicle>& vehicles, TabuList& tab
         return cost;
     }
     if (verbose) cout << "Making the moves tabu" << endl;
-    // Update tabulist
-    tabulist.makeTabu(prev(bestFromNodeIndex), bestFromNodeIndex);
-    tabulist.makeTabu(bestFromNodeIndex, next(bestFromNodeIndex));
-    tabulist.makeTabu(bestToNodeIndex, next(bestToNodeIndex));
+    // Update tabulist (Newly created edges)
+    tabulist.makeTabu(prev(bestFromNodeIndex), next(bestFromNodeIndex));
+    tabulist.makeTabu(bestToNodeIndex, bestFromNodeIndex);
+    tabulist.makeTabu(bestFromNodeIndex, next(bestToNodeIndex));
     // Switch the node from 'from' to 'to'
     if (verbose) cout << "Removing from Vehicle " << bestFromIndex << " Customer " << (*bestFromNodeIndex)->id << " ";
     Customer* node = vehicles[bestFromIndex].remove(bestFromNodeIndex);
