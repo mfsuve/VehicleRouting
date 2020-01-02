@@ -15,8 +15,8 @@ int main(int argc, char *argv[]) {
         return 0;
     }
     srand(0);
-    TabuSearch solver(argv[1], false);
-    double bestCost = solver.solve(3000000, 50, true);
+    TabuSearch solver(argv[1], true);
+    double bestCost = solver.solve(5000000, 60, false);
     
     cout << bestCost << endl;
     int i = 0;
