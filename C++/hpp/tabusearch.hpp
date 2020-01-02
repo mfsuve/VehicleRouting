@@ -21,7 +21,7 @@ private:
     string outputFilename;
     double cost;
     bool verbose;
-    double updateToBestNeighbor(vector<Vehicle>& vehicles, TabuList& tabulist);
+    double updateToBestNeighbor(vector<Vehicle>& vehicles, TabuList& tabulist, double bestCost);
     double calculateNeighborCost(list<Customer*>::const_iterator fromNodeIndex, list<Customer*>::const_iterator toNodeIndex);
 };
 #endif
