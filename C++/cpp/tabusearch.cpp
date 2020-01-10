@@ -6,32 +6,23 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include "../hpp/random.hpp"
 #include "../hpp/tabusearch.hpp"
 #include "../hpp/vehicle.hpp"
 #include "../hpp/customer.hpp"
 #include "../hpp/greedy.hpp"
 
 #include <iomanip>
-#include <cassert>
 
-TabuSearch::TabuSearch(const char* filename, bool verbose) : verbose(verbose) {
+using namespace std;
 
-    size_t pos = 0;
-    std::string token;
-    string s(filename);
-    while ((pos = s.find("\\")) != std::string::npos) {
-        token = s.substr(0, pos);
-        s.erase(0, pos + 1);
-    }
-    if (verbose) cout << "s: " << s << endl;
-    outputFilename = s;
+TabuSearch::TabuSearch(const char* filename, Random* rng, bool verbose) :  rng(rng) {
 
     ifstream file(filename);
     string line;
     getline(file, line);
     istringstream in(line);
     in >> N >> V >> c;
-    if (verbose) cout << N << " customers, " << V << " vehicles with capacity " << c << endl;
     double x, y, demand;
     int id = 0;
     for(; getline(file, line); ++id) {
@@ -91,13 +82,6 @@ double TabuSearch::updateToBestNeighbor(vector<Vehicle>& vehicles, TabuList& tab
                                  !tabulist.isTabu(fromNodeIndex, next(toNodeIndex))) ||         // If adding this edge is not tabu
                                  cost + neighborCost < bestCost) {                                 // OR we found a solution even better than the best one
 
-
-                                // if ((tabulist.isTabu(prev(fromNodeIndex), next(fromNodeIndex)) ||
-                                //      tabulist.isTabu(toNodeIndex, fromNodeIndex) ||
-                                //      tabulist.isTabu(fromNodeIndex, next(toNodeIndex))))
-                                //     cout << "Tabu but found even better solution" << endl;
-
-
                                 // If better, save
                                 if (neighborCost < bestNeighborCost) {
                                     bestNeighborCost = neighborCost;
@@ -130,8 +114,28 @@ double TabuSearch::updateToBestNeighbor(vector<Vehicle>& vehicles, TabuList& tab
     return cost + bestNeighborCost;
 }
 
-double TabuSearch::solve(int maxIteration, int tenure, bool save) {
-    TabuList tabulist(N, tenure);
+double TabuSearch::mutate(vector<Vehicle>& vehicles) {
+    while (true) {
+        auto to = rng->sample(vehicles);
+        auto from = rng->sample(vehicles);
+        
+        auto toNode = rng->sample(to->route, 1);
+        auto fromNode = rng->sample(from->route, 1, -1);
+
+        if (to == from && (toNode == fromNode || toNode == next(fromNode)))
+            continue;
+
+        if (to == from || to->fits(fromNode)) {
+            double neighborCost = calculateNeighborCost(fromNode, prev(toNode));
+            from->remove(fromNode);
+            to->add(fromNode, toNode);
+            return cost + neighborCost;
+        }
+    }
+}
+
+double TabuSearch::solve(int TID, int maxIteration, int tenure, double initMutationRate, double deltaMutationRate, bool save) {
+    TabuList tabulist(N, tenure, rng);
 
     vector<Vehicle> vehicles;
     for (int i = 0; i < V; ++i) {
@@ -139,61 +143,48 @@ double TabuSearch::solve(int maxIteration, int tenure, bool save) {
         vehicles.emplace_back(c);
     }
 
-    ofstream output;
-    if (save) {
-        string outputFilepath = "../../solution/" + outputFilename + "/output.txt";
-        output.open(outputFilepath);
-        output << "loop=" << -1 << " iteration=" << -1 << " bestCost=" << -1 << endl;
-        for (int ii = 0; ii < V; ++ii) {
-            Vehicle& vehicle = vehicles[ii];
-            for (Customer* customer : vehicle.route) {
-                output << customer->id << " ";
-            }
-            output << endl;
-        }
-        output << "-" << endl;
-    }
-
-    Greedy greedy(N, V, verbose);
-    cost = greedy.solve(customers, vehicles, output, save).cost;
+    Greedy greedy(N, V);
+    cost = greedy.solve(customers, vehicles).cost;
     double bestCost = cost;
 
-    cout << "Greedy done with the cost " << bestCost << endl;
+    // Greedy Done!
 
     int iteration = 0, loop = 0;
+    double MR = initMutationRate;
+    int mutatedTimes = 0;
     while (iteration < maxIteration) {
-        if (loop % 100000 == 0) {
-            ostringstream ss;
-            ss << "Loop: " << loop;
-            cout << setw(20) << left << ss.str() << " Best Cost: " << bestCost << endl;
-        }
         cost = updateToBestNeighbor(vehicles, tabulist, bestCost);
         if (cost < bestCost) {
             bestCost = cost;
             bestVehicles = vehicles;
             iteration = 0;
-            cout << "Changed!" << endl;
+            MR = initMutationRate;
         }
-        else
+        else {
             ++iteration;
+        }
 
-        iteration = 0;
-        if (bestCost <= 540)
-            break;
+        if (iteration % 100000 == 0) {
+            cout << "Iteration: " << iteration << " cost: " << bestCost << endl;
+        }
+
+        // Mutation
+        if ((iteration + 1) % (int)MR == 0) {
+            cost = mutate(vehicles);
+            mutatedTimes++;
+            MR *= deltaMutationRate;
+            if (MR < 500) {
+                MR = initMutationRate;
+                cost = bestCost;
+                vehicles = bestVehicles;
+            }
+            cout << "Mutated!" << endl;
+        }
+
+        // if (bestCost <= 540)
+        //     break;
 
         ++loop;
-
-        if (save) {
-            output << "loop=" << loop << " iteration=" << iteration << " bestCost=" << cost << endl;
-            for (int ii = 0; ii < V; ++ii) {
-                Vehicle& vehicle = vehicles[ii];
-                for (Customer* customer : vehicle.route) {
-                    output << customer->id << " ";
-                }
-                output << endl;
-            }
-            output << "-" << endl;
-        }
     }
     return bestCost;
 }
